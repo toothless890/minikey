@@ -159,6 +159,7 @@ int main()
     int fd = open(dict, O_RDONLY);
     int len = 0;
     int candidateIndex = 0;
+    int newWordFlag = 0;
 
     // take a human readable array of key neighbors and turn it into a bitmask
     for (int x = 0; x < 26; x++)
@@ -180,10 +181,12 @@ int main()
             {
                 printf("\b \b");
                 userInput[--len] = 0;
+                newWordFlag = 0;
             }
             break;
         // newline
         case '\n':
+            newWordFlag = 0;
             // enter ends a word, or starts a new line if no word is started
             if (len == 0)
             {
@@ -192,7 +195,7 @@ int main()
             else
             {
                 len = 0;
-                printf(" ");
+                // printf(" ");
             }
             break;
         // space
@@ -209,13 +212,20 @@ int main()
                 int wordlen = printf("%s", validWords[candidateIndex % validWordindex]);
                 candidateIndex++;
             }
+            newWordFlag = 1;
             break;
 
         // standard characters
         default:
+            if (newWordFlag == 1)
+            {
+                printf (" ");
+                len = 0;
+            }
             printf("%c", c);
             userInput[len++] = c;
             candidateIndex = 0;
+            newWordFlag = 0;
         }
     }
     close(fd);
