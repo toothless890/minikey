@@ -16,7 +16,7 @@ char **validWords;
 int validWordindex;
 char *overflowString;
 int overflowLen;
-char *neighborsarray[26] = {"aqz", "bgtvfrcjumnhy", "cfrtgbv", "dex", "edx", "frcvgtby", "gvfrtbc", "hynujmb", "ik", "jumyhnb", "ki", "lo", "mnjuyhb", "njuyhmb", "ol", "p'", "qaz", "rfvbgtc", "swx", "tgbvfrc", "ujmnhyb", "vfrtgbc", "wsx", "xsw", "yujhnmb", "zaq"};
+char *neighborsarray[26] = {"aqz", "bgtvfrcjumnhy", "cfrtgbv", "dex", "edx", "frcvgtby", "gvfrtbc", "hynujmb", "ik", "jumyhnb", "ki,", "lo.", "mnjuyhb", "njuyhmb", "ol", "p'/?;'\"", "qaz", "rfvbgtc", "swx", "tgbvfrc", "ujmnhyb", "vfrtgbc", "wsx", "xsw", "yujhnmb", "zaq"};
 __uint32_t neighborBitmaskArray[26];
 
 // Get a single character from the input without requiring flush and immediatly return
