@@ -19,7 +19,6 @@ int overflowLen;
 char *neighborsarray[26] = {"aqz", "bgtvfrcjumnhy", "cfrtgbv", "dex", "edx", "frcvgtby", "gvfrtbc", "hynujmb", "ik", "jumyhnb", "ki", "lo", "mnjuyhb", "njuyhmb", "ol", "p'", "qaz", "rfvbgtc", "swx", "tgbvfrc", "ujmnhyb", "vfrtgbc", "wsx", "xsw", "yujhnmb", "zaq"};
 __uint32_t neighborBitmaskArray[26];
 
-
 // Get a single character from the input without requiring flush and immediatly return
 char getch()
 {
@@ -73,7 +72,7 @@ int checkword(char *word, int len, int *neighbormask)
     return result;
 }
 
-// From a input word, a dictionary fd, and the word length, find a list of candidate words that match its bit signature. 
+// From a input word, a dictionary fd, and the word length, find a list of candidate words that match its bit signature.
 void getValidWords(char *userInput, int fd, int len)
 {
     int neighbormask[len];
@@ -87,8 +86,9 @@ void getValidWords(char *userInput, int fd, int len)
 
     for (int x = 0; x < len; x++)
     {
+        // just replace ; with p because we use raw ascii values for processing
         if (userInput[x] == ';')
-        { // just replace ; with p because my code uses raw ascii values for processing
+        {
             userInput[x] = 'p';
         }
 
@@ -98,7 +98,6 @@ void getValidWords(char *userInput, int fd, int len)
         neighbormask[x] = neighborBitmaskArray[tolower(userInput[x]) - 97];
     }
 
-    // printf("%d\n", len);
     // loop untill eof
     while (readsize > 0)
     {
@@ -116,11 +115,9 @@ void getValidWords(char *userInput, int fd, int len)
                 x++;
             }
 
-            char *word;
             int wordlen;
-            //
+            char *word = (char *)malloc(sizeof(char) * (x - wordStart + overflowLen));
 
-            word = (char *)malloc(sizeof(char) * (x - wordStart + overflowLen));
             for (int i = 0; i < overflowLen; i++)
             {
                 word[i] = overflowString[i];
@@ -151,19 +148,19 @@ void getValidWords(char *userInput, int fd, int len)
                 overflowString = word;
                 overflowLen = x - wordStart;
             }
-            // printf(">%s\n", word); // difference in wordstart and x may imply overflow letters
+
             x++;
         }
     }
 }
 
 int main()
-{   
+{
     int fd = open(dict, O_RDONLY);
     int len = 0;
     int candidateIndex = 0;
 
-    // turn a human readable array of key neighbors and turn it into a bitmask
+    // take a human readable array of key neighbors and turn it into a bitmask
     for (int x = 0; x < 26; x++)
     {
         neighborBitmaskArray[x] = bitmaskgroup(neighborsarray[x]);
@@ -187,6 +184,7 @@ int main()
             break;
         // newline
         case '\n':
+            // enter ends a word, or starts a new line if no word is started
             if (len == 0)
             {
                 printf("\n");
@@ -197,18 +195,22 @@ int main()
                 printf(" ");
             }
             break;
-        // space 
+        // space
         case ' ':
-            // cycle through and printing the candiate at index candidateIndex
+            // cycle through and print the candiate at index candidateIndex
             getValidWords(userInput, fd, len);
-            // delete the last len letters from the
-            for (int i = 0; i < len; i++)
+            // delete the last len letters from the preview
+            if (validWordindex > 0)
             {
-                printf("\b");
+                for (int i = 0; i < len; i++)
+                {
+                    printf("\b");
+                }
+                int wordlen = printf("%s", validWords[candidateIndex % validWordindex]);
+                candidateIndex++;
             }
-            int wordlen = printf("%s", validWords[candidateIndex % validWordindex]);
-            candidateIndex++;
             break;
+
         // standard characters
         default:
             printf("%c", c);
