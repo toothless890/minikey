@@ -16,7 +16,8 @@ char **validWords;
 int validWordindex;
 char *overflowString;
 int overflowLen;
-char *neighborsarray[26] = {"aqz", "bgtvfrcjumnhy", "cfrtgbv", "dex", "edx", "frcvgtby", "gvfrtbc", "hynujmb", "ik", "jumyhnb", "ki,", "lo.", "mnjuyhb", "njuyhmb", "ol", "p'/?;'\"", "qaz", "rfvbgtc", "swx", "tgbvfrc", "ujmnhyb", "vfrtgbc", "wsx", "xsw", "yujhnmb", "zaq"};
+char *neighborsarray[26] = {"aqz", "bgtvfrcjumnhy", "cfrtgbv", "dex", "edx", "frcvgtby", "gvfrtbc", "hynujmb", "ik,", "jumyhnb", "ki,", "lo.", "mnjuyhb", "njuyhmb", "ol", "p'/?;:'\"", "qaz", "rfvbgtc", "swx", "tgbvfrc", "ujmnhyb", "vfrtgbc", "wsx", "xsw", "yujhnmb", "zaq"};
+char *__restrict readBuffer;
 __uint32_t neighborBitmaskArray[26];
 
 // Get a single character from the input without requiring flush and immediatly return
@@ -45,6 +46,7 @@ __uint32_t bitmask(char letter)
 {
 
     letter = tolower(letter);
+    //TODO: this does not properly work if a character is not a letter. It is functionally capable, just not working as planned
     letter -= 97; // now a=1
     return 1 << letter;
 }
@@ -76,10 +78,11 @@ int checkword(char *word, int len, int *neighbormask)
 void getValidWords(char *userInput, int fd, int len)
 {
     int neighbormask[len];
-    lseek(fd, 0, SEEK_SET); // reset the dictionary read offset.
-    validWords = (char **)malloc(sizeof(char *) * BUFFERSIZE * VALIDBUFFERCOUNT);
     validWordindex = 0;
-    readBuffer = (char *)malloc(sizeof(char) * BUFFERSIZE);
+
+    lseek(fd, 0, SEEK_SET); // reset the dictionary read offset.
+    
+    
     int readsize = 1;
 
     overflowLen = 0; // letters leftover after reading the buffer (only read BUFFERSIZE number of characters per iteration)
@@ -161,6 +164,9 @@ int main()
     int candidateIndex = 0;
     int newWordFlag = 0;
 
+    readBuffer = (char *)malloc(sizeof(char) * BUFFERSIZE);
+    validWords = (char **)malloc(sizeof(char *) * BUFFERSIZE * VALIDBUFFERCOUNT);
+
     // take a human readable array of key neighbors and turn it into a bitmask
     for (int x = 0; x < 26; x++)
     {
@@ -229,4 +235,6 @@ int main()
         }
     }
     close(fd);
+    free(readBuffer);
+    free(validWords);
 }
