@@ -10,6 +10,7 @@
 #define VALIDBUFFERCOUNT 1
 
 // char *dict = "/usr/share/dict/words";
+// TODO: make the dictionary swappable if the 10k words are unsatisfactory
 char *dict = "google-10000-english.txt";
 char *__restrict readBuffer;
 char **validWords;
@@ -157,7 +158,8 @@ void getValidWords(char *userInput, int fd, int len)
 
 int clearMemory(char **wordlist, int len)
 {
-    for (int i = 0; i<len; i++){
+    for (int i = 0; i < len; i++)
+    {
         free(wordlist[i]);
     }
 }
@@ -166,6 +168,7 @@ int main()
 {
     int fd = open(dict, O_RDONLY);
     int len = 0;
+    int wordstart = 0;
     int candidateIndex = 0;
     int newWordFlag = 0;
 
@@ -188,10 +191,22 @@ int main()
         {
         // backspace
         case 127:
-            if (len > 0)
+            if (wordstart > 0 || len > 0)
             {
                 printf("\b \b");
-                userInput[--len] = 0;
+                if (len == 0)
+                {
+                    wordstart--;
+                    // TODO: maybe set wordstart to be the previous whitespace or zero: this allows for editing words
+                    // alternatively, and the current config will not change the whole previous word, making it easier to
+                    // edit incorrectly typed things rather than just changing the whole word?
+
+                }
+                else
+                {
+                    len--;
+                }
+                userInput[wordstart + len] = 0;
             }
             newWordFlag = 0;
             break;
@@ -205,6 +220,8 @@ int main()
             }
             else
             {
+                // at this moment, the userInput buffer contains the whole line of desired text. This can be used as an output.
+                wordstart = 0;
                 len = 0;
                 // printf("clearing memory from newline");
                 // clearMemory(validWords, validWordindex);
@@ -239,7 +256,7 @@ int main()
                 printf(" ");
                 // printf("clearing memory from space");
                 // clearMemory(validWords, validWordindex);
-                
+                wordstart += len;
                 len = 0;
             }
             printf("%c", c);
