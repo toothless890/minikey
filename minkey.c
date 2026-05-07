@@ -184,7 +184,7 @@ int main()
     // loop on user input
     while (1)
     {
-        char userInput[64]; // max word length
+        char userInput[BUFFERSIZE]; // max word length
         char c = getch();
 
         switch (c)
@@ -256,7 +256,7 @@ int main()
                 printf(" ");
                 // printf("clearing memory from space");
                 // clearMemory(validWords, validWordindex);
-                wordstart += len;
+                wordstart += len+1;
                 len = 0;
             }
             printf("%c", c);
