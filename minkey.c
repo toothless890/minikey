@@ -18,7 +18,7 @@ char *overflowString;
 int overflowLen;
 char *neighborsarray[26] = {"aqz", "bgtvfrcjumnhy", "cfrtgbv", "dex", "edx", "frcvgtby", "gvfrtbc", "hynujmb", "ik,", "jumyhnb", "ki,", "lo.", "mnjuyhb", "njuyhmb", "ol", "p'/?;:'\"", "qaz", "rfvbgtc", "swx", "tgbvfrc", "ujmnhyb", "vfrtgbc", "wsx", "xsw", "yujhnmb", "zaq"};
 char *__restrict readBuffer;
-__uint32_t neighborBitmaskArray[26];
+int neighborBitmaskArray[26];
 
 // Get a single character from the input without requiring flush and immediatly return
 char getch()
@@ -42,17 +42,17 @@ char getch()
 }
 
 // turns a letter into a bitmask representation -- a = 1, b = 2, c = 4, d = 8 etc.
-__uint32_t bitmask(char letter)
+int bitmask(char letter)
 {
 
     letter = tolower(letter);
-    //TODO: this does not properly work if a character is not a letter. It is functionally capable, just not working as planned
+    // TODO: this does not properly work if a character is not a letter. It is functionally capable, just not working as planned
     letter -= 97; // now a=1
     return 1 << letter;
 }
 
 // turns a string into a bitmask of all unique letters in the string
-__uint32_t bitmaskgroup(char *letters)
+int bitmaskgroup(char *letters)
 {
     int len = strlen(letters);
     int result = 0;
@@ -81,8 +81,7 @@ void getValidWords(char *userInput, int fd, int len)
     validWordindex = 0;
 
     lseek(fd, 0, SEEK_SET); // reset the dictionary read offset.
-    
-    
+
     int readsize = 1;
 
     overflowLen = 0; // letters leftover after reading the buffer (only read BUFFERSIZE number of characters per iteration)
@@ -151,9 +150,15 @@ void getValidWords(char *userInput, int fd, int len)
                 overflowString = word;
                 overflowLen = x - wordStart;
             }
-
             x++;
         }
+    }
+}
+
+int clearMemory(char **wordlist, int len)
+{
+    for (int i = 0; i<len; i++){
+        free(wordlist[i]);
     }
 }
 
@@ -187,8 +192,8 @@ int main()
             {
                 printf("\b \b");
                 userInput[--len] = 0;
-                newWordFlag = 0;
             }
+            newWordFlag = 0;
             break;
         // newline
         case '\n':
@@ -201,13 +206,19 @@ int main()
             else
             {
                 len = 0;
+                // printf("clearing memory from newline");
+                // clearMemory(validWords, validWordindex);
                 // printf(" ");
             }
             break;
         // space
         case ' ':
             // cycle through and print the candiate at index candidateIndex
-            getValidWords(userInput, fd, len);
+            if (!newWordFlag)
+            {
+                clearMemory(validWords, validWordindex);
+                getValidWords(userInput, fd, len);
+            }
             // delete the last len letters from the preview
             if (validWordindex > 0)
             {
@@ -225,7 +236,10 @@ int main()
         default:
             if (newWordFlag == 1)
             {
-                printf (" ");
+                printf(" ");
+                // printf("clearing memory from space");
+                // clearMemory(validWords, validWordindex);
+                
                 len = 0;
             }
             printf("%c", c);
