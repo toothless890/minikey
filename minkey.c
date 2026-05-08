@@ -76,7 +76,7 @@ int checkword(char *word, int len, int *neighbormask)
 }
 
 // From a input word, a dictionary fd, and the word length, find a list of candidate words that match its bit signature.
-void getValidWords(char *userInput, int fd, int len)
+void getValidWords(char *userInput, int fd, int pos, int len)
 {
     int neighbormask[len];
     validWordindex = 0;
@@ -99,6 +99,7 @@ void getValidWords(char *userInput, int fd, int len)
         // TODO: check for spaces at top of read and break into individual words
 
         neighbormask[x] = neighborBitmaskArray[tolower(userInput[x]) - 97];
+        // printf("%d ",neighbormask[x]);
     }
 
     // loop untill eof
@@ -119,7 +120,9 @@ void getValidWords(char *userInput, int fd, int len)
             }
 
             int wordlen;
-            char *word = (char *)malloc(sizeof(char) * (x - wordStart + overflowLen));
+            wordlen = x - wordStart + overflowLen;
+            
+            char *word = (char *) malloc(sizeof(char) * (wordlen+1));
 
             for (int i = 0; i < overflowLen; i++)
             {
@@ -129,7 +132,6 @@ void getValidWords(char *userInput, int fd, int len)
             {
                 word[i - wordStart + overflowLen] = readBuffer[i];
             }
-            wordlen = x - wordStart + overflowLen;
             overflowLen = 0;
 
             // check if the word is overlapping into the next buffered read
@@ -140,6 +142,9 @@ void getValidWords(char *userInput, int fd, int len)
                 {
                     if (checkword(word, wordlen, neighbormask))
                     {
+                        // printf("%c ", word[wordlen]);
+                        // printf("%ld ",sizeof(word));
+                        word[wordlen] = '\0';
                         // printf("%s+%d\n",word, wordlen );
                         validWords[validWordindex] = word;
                         validWordindex++;
@@ -149,7 +154,7 @@ void getValidWords(char *userInput, int fd, int len)
             else
             {
                 overflowString = word;
-                overflowLen = x - wordStart;
+                overflowLen = readsize-x;
             }
             x++;
         }
@@ -234,7 +239,7 @@ int main()
             if (!newWordFlag)
             {
                 clearMemory(validWords, validWordindex);
-                getValidWords(userInput, fd, len);
+                getValidWords(userInput, fd, wordstart, len);
             }
             // delete the last len letters from the preview
             if (validWordindex > 0)
