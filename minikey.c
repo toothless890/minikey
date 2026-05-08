@@ -11,8 +11,8 @@
 
 // char *dict = "/usr/share/dict/words";
 // TODO: make the dictionary swappable if the 10k words are unsatisfactory
-char *dict = "google-10000-english.txt";
-char *__restrict readBuffer;
+// char *dict = "google-10000-english.txt";
+char *dict = "extended-dictionary.txt";
 char **validWords;
 int validWordindex;
 char *overflowString;
