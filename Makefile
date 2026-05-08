@@ -1,11 +1,11 @@
 CFLAGS= -g -Werror
 CC=gcc
 
-all: minkey.o
-	$(CC) $(CFLAGS) -o minikey minkey.o
+all: minikey.o
+	$(CC) $(CFLAGS) -o minikey minikey.o
 
-minkey.o: minkey.c
-	$(CC) $(CFLAGS) -c minkey.c
+minkey.o: minikey.c
+	$(CC) $(CFLAGS) -c minikey.c
 
 run: all
 	./minikey
