@@ -202,9 +202,6 @@ int main()
                 if (len == 0)
                 {
                     wordstart--;
-                    // TODO: maybe set wordstart to be the previous whitespace or zero: this allows for editing words
-                    // alternatively, and the current config will not change the whole previous word, making it easier to
-                    // edit incorrectly typed things rather than just changing the whole word?
 
                 }
                 else
@@ -221,16 +218,14 @@ int main()
             // enter ends a word, or starts a new line if no word is started
             if (len == 0)
             {
+                // at this moment, the userInput buffer contains the whole line of desired text. This can be used as an output.
+                wordstart = 0;
                 printf("\n");
             }
             else
             {
-                // at this moment, the userInput buffer contains the whole line of desired text. This can be used as an output.
-                wordstart = 0;
+                // start a new word without whitespace
                 len = 0;
-                // printf("clearing memory from newline");
-                // clearMemory(validWords, validWordindex);
-                // printf(" ");
             }
             break;
         // space
