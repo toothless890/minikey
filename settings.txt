@@ -1,0 +1,3 @@
+neighborsarray: "aqz", "bgtvfrcjumnhy", "cfrtgbv", "dcex", "edx", "frcvgtby", "gvfrtbc", "hynujmb", "ik,", "jumyhnb", "ki,", "lo.", "mnjuyhb", "njuyhmb", "ol", "p'/?;:'\"", "qaz", "rfvbgtc", "swx", "tgbvfrc", "ujmnhyb", "vfrtgbc", "wsx", "xsw", "yujhnmb", "zaq"
+test: hello
+what: okay?
