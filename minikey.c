@@ -9,14 +9,12 @@
 // char *dict = "/usr/share/dict/words";
 // TODO: make the dictionary swappable if the 10k words are unsatisfactory
 // char *dict = "google-10000-english.txt";
-char *dict = "extended-dictionary.txt";
+
 char **validWords;
 int validWordindex;
 char *overflowString;
 int overflowLen;
-char *neighborsarray[26] = {"aqz", "bgtvfrcjumnhy", "cfrtgbv", "dex", "edx", "frcvgtby", "gvfrtbc", "hynujmb", "ik,", "jumyhnb", "ki,", "lo.", "mnjuyhb", "njuyhmb", "ol", "p'/?;:'\"", "qaz", "rfvbgtc", "swx", "tgbvfrc", "ujmnhyb", "vfrtgbc", "wsx", "xsw", "yujhnmb", "zaq"};
-int neighborBitmaskArray[26];
-char *__restrict readBuffer;
+
 
 int main()
 {
