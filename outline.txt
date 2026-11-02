@@ -1,0 +1,14 @@
+editor.c handles all file io, buffer storage, text display
+keylogic.c stores dictionary, decoding logic 
+settings.c processes the settings.txt file and applies config options - which dictionary to use, key mappings, etc. (probably will be moved into relevant files) 
+minikey.c combines and passes information between the two
+
+
+keyboard keys required for this system
+
+asdfjkl; \b\n + ctrl (ctrl+a exits, ctrl+s saves, ctrl+d undo, ctrl+f redo, ctrl+j up, ctrl+k down, ctrl+l left, ctrl + ; right) (ctrl space goes backwards in dictionary, ctrl enter toggles capitalization of selected word?(all lower, first letter upper, all upper) ctrl backspace removes entire selected word)
+
+for the editor, the current word is selected, if the cursor is anywhere on a word, then it highlights it. Pressing space will take the whole word and attempt to decode it.
+
+for the display, the file gets broken into buffers for each line. on resize, redraw? any edits will update the line buffers. On save, buffers are written sequentially to the file directly
+if line buffer overfills max size, copy it into a buffer of double size. But keep null terminators and track line length in a sibling array

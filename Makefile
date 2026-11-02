@@ -1,14 +1,15 @@
 CFLAGS= -g -Werror
 CC=gcc
 
-all: minikey.o
-	$(CC) $(CFLAGS) -o minikey minikey.o
-
-minkey.o: minikey.c
+all: editor.o inputlogic.o minikey.o settings.o 
+	$(CC) $(CFLAGS) -o minikey editor.o inputlogic.o minikey.o settings.o 
+editor.o: editor.c
+	$(CC) $(CFLAGS) -c editor.c
+inputlogic.o: inputlogic.c
+	$(CC) $(CFLAGS) -c inputlogic.c
+minikey.o: minikey.c
 	$(CC) $(CFLAGS) -c minikey.c
-
-run: all
-	./minikey
-
+settings.o: settings.c
+	$(CC) $(CFLAGS) -c settings.c
 clean:
-	@rm minikey *.o 2>/dev/null || true
+	@rm editor inputlogic minikey settings  *.o 2>/dev/null || true
