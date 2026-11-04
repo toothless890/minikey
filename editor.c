@@ -1,4 +1,15 @@
 #include "editor.h"
+#include "ansiCodes.h"
+#define UNDOBUFFERSIZE 256
+
+
+int terminalWidth;
+int terminalHeight;
+int cursorX;
+int cursorY;
+char* filename;
+char** lineBufferArray; // this is not super scalable, but for smallish text documents, it should be fine
+int* lineSizeArray;
 // fields:
 // filename (char*)
 // linebufferarray (char **)
@@ -22,6 +33,7 @@
 // methods:
 
 // read() reads file into line buffers returns 0 on success or -1 failure 
+
 // save() writes line buffers back into the original file
 // close() closes file descriptor, frees everything, in prep for exit
 
@@ -35,3 +47,41 @@
 
 // drawAllBuffers() completely clears and redraws the terminal
 
+
+void initEditor(){
+    signal(SIGWINCH, resizeTerminal);
+    zeroCursorXY();
+    resizeTerminal(0);
+}
+
+
+
+void resizeTerminal(int signal){
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    terminalHeight = w.ws_row;
+    terminalWidth = w.ws_row;
+    clearTerminal();
+    printf("\rResized! Rows: %d, Cols: %d   ", terminalHeight, terminalWidth);
+    fflush(stdout);
+}
+
+char getch()
+{
+    int c;
+    static struct termios oldt, newt;
+
+    tcgetattr(STDIN_FILENO, &oldt);
+
+    newt = oldt;
+
+    newt.c_lflag &= ~(ICANON);
+    newt.c_lflag &= ~(ECHO);
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+    c = getchar();
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    return c;
+}

@@ -40,6 +40,6 @@ settings_t *readSettings() {
     return settings;
 }
 
-int main(void) {
-    readSettings();
-}
+// int main(void) {
+//     readSettings();
+// }
