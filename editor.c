@@ -60,7 +60,7 @@ void resizeTerminal(int signal){
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     terminalHeight = w.ws_row;
-    terminalWidth = w.ws_row;
+    terminalWidth = w.ws_col;
     clearTerminal();
     printf("\rResized! Rows: %d, Cols: %d   ", terminalHeight, terminalWidth);
     fflush(stdout);
