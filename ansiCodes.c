@@ -13,12 +13,23 @@ void zeroCursorXY(){
 
 // }
 
+// void saveScreen(){
+//     printf("\e[s\e[?47h");
+
+// }
+
+// void restoreScreen(){
+//     printf("\e[?47l\e[u");
+
+// }
+
 void saveScreen(){
-    printf("\e[s\e[?47h");
+    printf("\033[?1049h");
 
 }
 
 void restoreScreen(){
-    printf("\e[?47l\e[u");
+    printf("\033[?1049l");
 
 }
+
